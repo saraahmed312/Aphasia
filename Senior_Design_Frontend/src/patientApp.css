@@ -1,0 +1,555 @@
+:root {
+  --bg: #dff8e7; /* light green page */
+  --text: #1f2937;
+  --muted: rgba(17, 24, 39, 0.65);
+  --border: rgba(17, 24, 39, 0.12);
+  --shadow: 0 10px 25px rgba(17, 24, 39, 0.08);
+
+  --patientBg: #cfefff; /* light blue bubble (patient transcript) */
+  --patientText: #0f2f5c;
+  --assistantBg: #ffffff;
+  --assistantText: #1f2a37;
+
+  --accent: #e85b7a; /* pink buttons */
+  --accent2: #6d28d9;
+  --done: #16a34a;
+  --danger: #dc2626;
+
+  /* Dynamic typography defaults */
+  --font-chat: clamp(16px, 1.2vw, 24px);
+  --font-meta: clamp(12px, 0.75vw, 16px);
+  --font-button-main: clamp(18px, 1.4vw, 28px);
+  --font-button-small: clamp(15px, 1.05vw, 22px);
+  --font-stepper: clamp(10px, 0.72vw, 14px);
+}
+
+/* Wider screens: bump readable size up. */
+@media (min-aspect-ratio: 16/10) {
+  :root {
+    --font-chat: clamp(18px, 1.25vw, 28px);
+    --font-meta: clamp(13px, 0.8vw, 18px);
+    --font-button-main: clamp(20px, 1.45vw, 30px);
+    --font-button-small: clamp(16px, 1.1vw, 24px);
+    --font-stepper: clamp(11px, 0.75vw, 15px);
+  }
+}
+
+/* Taller/narrower screens: keep text large for accessibility. */
+@media (max-aspect-ratio: 10/13) {
+  :root {
+    --font-chat: clamp(17px, 4.4vw, 24px);
+    --font-meta: clamp(13px, 3.1vw, 16px);
+    --font-button-main: clamp(19px, 4.9vw, 26px);
+    --font-button-small: clamp(16px, 4.2vw, 22px);
+    --font-stepper: clamp(11px, 2.9vw, 13px);
+  }
+}
+
+/* Override the Vite scaffold's default layout */
+#root {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  border-inline: none;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.demoLayout {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  min-height: 100svh;
+  background: var(--bg);
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  background: var(--bg);
+}
+
+.patientPage {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.techPanel {
+  flex: 0 0 460px;
+  width: 460px;
+  max-width: 46vw;
+  align-self: stretch;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  position: sticky;
+  top: 12px;
+  height: calc(100svh - 24px);
+}
+
+.techHeader {
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.techTitle {
+  font-weight: 950;
+  color: rgba(17, 24, 39, 0.9);
+  font-size: 14px;
+  letter-spacing: 0.2px;
+}
+
+.techSubtitle {
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.62);
+  line-height: 1.25;
+}
+
+.techBody {
+  display: grid;
+  grid-template-columns: 1fr;
+  height: calc(100% - 62px);
+}
+
+.techStageList {
+  padding: 10px 10px 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.techStageItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  background: rgba(255, 255, 255, 0.92);
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.techStageItem.pending {
+  opacity: 0.72;
+}
+
+.techStageItem.active {
+  border-color: rgba(232, 91, 122, 0.55);
+  background: rgba(232, 91, 122, 0.08);
+  box-shadow: 0 10px 20px rgba(232, 91, 122, 0.12);
+  transform: translateY(-1px);
+}
+
+.techStageItem.done {
+  border-color: rgba(22, 163, 74, 0.35);
+  background: rgba(22, 163, 74, 0.06);
+}
+
+.techStageDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.85);
+  border: 2px solid rgba(148, 163, 184, 0.85);
+  flex: 0 0 auto;
+}
+
+.techStageItem.active .techStageDot {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.techStageItem.done .techStageDot {
+  background: var(--done);
+  border-color: var(--done);
+}
+
+.techStageText {
+  min-width: 0;
+}
+
+.techStageName {
+  font-weight: 950;
+  font-size: 13px;
+  color: rgba(17, 24, 39, 0.88);
+}
+
+.techStageFn {
+  margin-top: 2px;
+  font-size: 11px;
+  color: rgba(17, 24, 39, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.techDetail {
+  margin-top: 10px;
+  padding: 12px 12px 14px;
+  border-top: 1px solid rgba(17, 24, 39, 0.1);
+  overflow: auto;
+}
+
+.techEmpty {
+  padding: 14px 10px;
+  border-radius: 14px;
+  background: rgba(223, 248, 231, 0.65);
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  color: rgba(17, 24, 39, 0.78);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.techDetailHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.techDetailTitle {
+  font-size: 14px;
+  font-weight: 950;
+  color: rgba(17, 24, 39, 0.9);
+}
+
+.techDetailFn {
+  font-size: 11px;
+  color: rgba(17, 24, 39, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60%;
+}
+
+.techSection {
+  margin-top: 12px;
+}
+
+.techSectionTitle {
+  font-weight: 950;
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.78);
+  margin-bottom: 6px;
+}
+
+.techCode,
+.techPre {
+  margin: 0;
+  padding: 10px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  background: rgba(255, 255, 255, 0.92);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.35;
+  color: rgba(17, 24, 39, 0.86);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.techDetails {
+  margin-top: 12px;
+}
+
+.techDetails > summary {
+  cursor: pointer;
+  font-weight: 950;
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.74);
+}
+
+.techDetails[open] > summary {
+  margin-bottom: 8px;
+}
+
+.topBar {
+  padding: 16px 18px 12px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.topTitle {
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.topSub {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.chatWrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 14px 150px; /* leave room for controls + fixed stepper */
+  background: var(--bg);
+}
+
+.chatRow {
+  display: flex;
+  margin: 12px 0;
+}
+
+.chatRow.patient {
+  justify-content: flex-end;
+}
+
+.chatRow.assistant {
+  justify-content: flex-start;
+}
+
+.chatRow.cue {
+  justify-content: center;
+}
+
+.chatBubble {
+  max-width: 78%;
+  background: var(--assistantBg);
+  color: var(--assistantText);
+  border: 0;
+  border-radius: 18px;
+  padding: 16px 16px;
+  box-shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
+}
+
+.chatBubble.patient {
+  background: var(--patientBg);
+  color: var(--patientText);
+  box-shadow: 0 6px 18px rgba(17, 24, 39, 0.04);
+}
+
+.chatBubble.cue {
+  background: #fff8fc;
+  border: 2px solid rgba(232, 91, 122, 0.32);
+  max-width: 72%;
+}
+
+.chatMeta {
+  font-size: var(--font-meta);
+  color: rgba(17, 24, 39, 0.65);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.chatRow.patient .chatMeta {
+  color: rgba(31, 42, 122, 0.75);
+}
+
+.chatText {
+  white-space: pre-wrap;
+  line-height: 1.35;
+  font-size: var(--font-chat);
+}
+
+.controls {
+  position: relative;
+  padding: 16px 14px 22px;
+  /* Keep it visually tied to the light-green patient background */
+  background: var(--bg);
+  border-top: none;
+  /* Lift the controls so the fixed bottom stepper doesn't cover them */
+  margin-bottom: 68px;
+  z-index: 11;
+}
+
+.recordPanel {
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+}
+
+.mainRow {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.speakBtn {
+  height: 62px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-weight: 900;
+  font-size: var(--font-button-main);
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(232, 91, 122, 0.22);
+  flex: 1 1 auto;
+}
+
+.speakBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.stopBtn {
+  flex: 0 0 130px;
+  height: 62px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-weight: 900;
+  font-size: var(--font-button-small);
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(232, 91, 122, 0.16);
+}
+
+.stopBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.errorBox {
+  margin-top: 2px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  color: var(--danger);
+  background: rgba(220, 38, 38, 0.08);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.stepperBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px 12px;
+  background: rgba(223, 248, 231, 0.92);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(17, 24, 39, 0.08);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+}
+
+.stepperInner {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  overflow-x: hidden;
+  padding-bottom: 2px;
+  width: min(860px, 100%);
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.stepperStep {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 160px; /* keeps all steps visible on Macbook-width tabs */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.stepperDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  border: 2px solid #cbd5e1;
+}
+
+.stepperLabel {
+  font-size: var(--font-stepper);
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.65);
+  white-space: normal; /* allow wrapping inside the pill */
+  line-height: 1.05;
+  text-align: center;
+}
+
+.stepperStep.pending .stepperDot {
+  background: #cbd5e1;
+  border-color: #cbd5e1;
+}
+
+.stepperStep.pending .stepperLabel {
+  color: rgba(17, 24, 39, 0.55);
+}
+
+.stepperStep.active {
+  border-color: rgba(245, 158, 11, 0.45);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.stepperStep.active .stepperDot {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.stepperStep.active .stepperLabel {
+  color: rgba(232, 91, 122, 0.95);
+}
+
+.stepperStep.done {
+  border-color: rgba(16, 185, 129, 0.45);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.stepperStep.done .stepperDot {
+  background: var(--done);
+  border-color: var(--done);
+}
+
+.stepperStep.done .stepperLabel {
+  color: rgba(5, 150, 105, 0.95);
+}
+
+@media (max-width: 640px) {
+  .demoLayout {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .techPanel {
+    position: relative;
+    top: 0;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0 10px 10px;
+  }
+
+  .stopBtn {
+    flex-basis: 110px;
+  }
+  .chatBubble {
+    max-width: 90%;
+  }
+  .stepperStep {
+    padding: 7px 9px;
+    gap: 8px;
+  }
+}
+
